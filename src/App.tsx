@@ -1,8 +1,20 @@
+import { Suspense } from "react";
+import { ThemeComparisonPage } from "./components/ThemeComparisonPage";
+import { LoadingFallback } from "./components/LoadingFallback";
+
 function App() {
   return (
-    <>
-      <h1 className="text-8xl text-red-500 font-extrabold">Vite + React</h1>
-    </>
+    <Suspense fallback={<FullPageLoader />}>
+      <ThemeComparisonPage />
+    </Suspense>
+  );
+}
+
+function FullPageLoader() {
+  return (
+    <div className="flex items-center justify-center h-screen bg-gray-900">
+      <LoadingFallback message="Initializing editor..." />
+    </div>
   );
 }
 
