@@ -1,4 +1,5 @@
-import { Loader2 } from "lucide-react";
+import type React from "react";
+import { Loader2 as Loader2Icon } from "lucide-react";
 
 interface LoadingFallbackProps {
   message?: string;
@@ -7,21 +8,21 @@ interface LoadingFallbackProps {
 /**
  * A loading spinner component used as a Suspense fallback.
  */
-export function LoadingFallback({
+export const LoadingFallback: React.FC<LoadingFallbackProps> = ({
   message = "Loading...",
-}: LoadingFallbackProps) {
+}) => {
   return (
     <div className="flex items-center justify-center gap-2 p-8 text-gray-400">
-      <Loader2 className="h-5 w-5 animate-spin" />
+      <Loader2Icon className="h-5 w-5 animate-spin" />
       <span>{message}</span>
     </div>
   );
-}
+};
 
 /**
  * A skeleton loading state for code blocks.
  */
-export function CodeBlockSkeleton() {
+export const CodeBlockSkeleton: React.FC = () => {
   return (
     <div className="flex-1 bg-gray-800 p-4 animate-pulse">
       <div className="space-y-2">
@@ -36,4 +37,4 @@ export function CodeBlockSkeleton() {
       </div>
     </div>
   );
-}
+};

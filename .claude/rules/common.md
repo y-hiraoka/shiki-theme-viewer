@@ -1,0 +1,21 @@
+# Coding Rules
+
+- `index.ts` から re-exports を集約するようなファイルは作成してはならない
+- 他ファイルで使用しない関数を export してはならない
+- React コンポーネントは `React.FC` 型を使用してアロー関数で定義する
+- React Compiler を有効にしているため、`useMemo`, `useCallback`, `React.memo` を使用すべきではない
+- コードを編集したら ESLint でスタイルチェックを実行する
+  - ESLint の警告やエラーを放置してはならない
+  - eslint-disable を積極的に使用すべきではない
+  - eslint-disable を使用する場合は、使用する理由をコメントで明記する
+- コードを編集したら型チェックを実行する
+  - 型エラーを放置してはならない
+  - @ts-ignore を使用してはならない
+  - @ts-expect-error を使用すべきではない
+  - @ts-expect-error を使用する場合は、使用する理由をコメントで明記する
+- React グローバルステートや非同期ステートには jotai を使用する
+  - atom 変数は `Atom` をサフィックスに付与する
+  - コンポーネントで atom の値だけを参照する場合は `useAtomValue` を使用する
+  - コンポーネントで atom の値の更新関数だけを参照する場合は `useSetAtom` を使用する
+  - コンポーネントで atom の値と更新関数の両方を参照する場合は `useAtom` を使用する
+- lucide-react のアイコンコンポーネントを使用する場合は、`Icon` サフィックス付き変数を import する

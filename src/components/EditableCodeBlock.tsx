@@ -1,12 +1,12 @@
-import { useRef, useEffect, useMemo } from "react";
-import type { BundledLanguage, BundledTheme } from "shiki";
-import { useHighlightedCode } from "../hooks/useHighlightedCode";
+import type React from "react";
+import { useRef, useEffect } from "react";
+import { useAtom, useAtomValue } from "jotai";
+import type { BundledTheme } from "shiki";
+import { codeAtom } from "../atoms/codeAtom";
+import { highlightedCodeAtomFamily } from "../atoms/highlightedCodeAtom";
 
 interface EditableCodeBlockProps {
-  code: string;
-  onCodeChange: (code: string) => void;
   theme: BundledTheme;
-  language: BundledLanguage;
 }
 
 /**
@@ -23,20 +23,20 @@ function extractBackgroundColor(html: string): string {
  * An editable code block with syntax highlighting.
  * Uses a transparent textarea overlaid on highlighted code.
  */
-export function EditableCodeBlock({
-  code,
-  onCodeChange,
+export const EditableCodeBlock: React.FC<EditableCodeBlockProps> = ({
   theme,
-  language,
-}: EditableCodeBlockProps) {
+}) => {
+  const [code, setCode] = useAtom(codeAtom);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const highlightedRef = useRef<HTMLDivElement>(null);
-  const highlightedHtml = useHighlightedCode(code, theme, language);
 
-  const backgroundColor = useMemo(
-    () => extractBackgroundColor(highlightedHtml),
-    [highlightedHtml]
-  );
+  // Get the memoized atom for this theme (atomFamily handles memoization)
+  const highlightedCodeAtom = highlightedCodeAtomFamily(theme);
+
+  // Get highlighted HTML from atom (may suspend if resources not loaded)
+  const highlightedHtml = useAtomValue(highlightedCodeAtom);
+
+  const backgroundColor = extractBackgroundColor(highlightedHtml);
 
   // Sync scroll position between textarea and highlighted code
   useEffect(() => {
@@ -62,7 +62,7 @@ export function EditableCodeBlock({
       {/* Highlighted code layer (visual only) */}
       <div
         ref={highlightedRef}
-        className="absolute inset-0 overflow-hidden pointer-events-none p-4 [&_pre]:!bg-transparent [&_pre]:!m-0 [&_pre]:!p-0 [&_code]:!bg-transparent"
+        className="absolute inset-0 overflow-hidden pointer-events-none p-4 [&_pre]:bg-transparent! [&_pre]:m-0! [&_pre]:p-0! [&_code]:bg-transparent!"
         dangerouslySetInnerHTML={{ __html: highlightedHtml }}
         aria-hidden="true"
       />
@@ -71,8 +71,8 @@ export function EditableCodeBlock({
       <textarea
         ref={textareaRef}
         value={code}
-        onChange={(e) => onCodeChange(e.target.value)}
-        className="relative w-full h-full min-h-[400px] p-4 bg-transparent text-transparent caret-white selection:bg-blue-500/30 resize-none outline-none font-mono text-sm leading-relaxed whitespace-pre overflow-auto"
+        onChange={(e) => setCode(e.target.value)}
+        className="relative w-full h-full min-h-100 p-4 bg-transparent text-transparent caret-white selection:bg-blue-500/30 resize-none outline-none font-mono text-sm leading-relaxed whitespace-pre overflow-auto"
         spellCheck={false}
         autoCapitalize="off"
         autoCorrect="off"
@@ -81,4 +81,4 @@ export function EditableCodeBlock({
       />
     </div>
   );
-}
+};

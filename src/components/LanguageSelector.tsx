@@ -1,4 +1,5 @@
-import { ChevronDown } from "lucide-react";
+import type React from "react";
+import { ChevronDown as ChevronDownIcon } from "lucide-react";
 import type { BundledLanguage } from "shiki";
 import { getSortedLanguages } from "../lib/shiki/languages";
 
@@ -14,7 +15,10 @@ const sortedLanguages = getSortedLanguages();
  * A dropdown selector for choosing a programming language.
  * Popular languages are shown at the top of the list.
  */
-export function LanguageSelector({ value, onChange }: LanguageSelectorProps) {
+export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
+  value,
+  onChange,
+}) => {
   return (
     <div className="relative">
       <select
@@ -28,7 +32,7 @@ export function LanguageSelector({ value, onChange }: LanguageSelectorProps) {
           </option>
         ))}
       </select>
-      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+      <ChevronDownIcon className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
     </div>
   );
-}
+};

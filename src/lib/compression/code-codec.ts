@@ -7,10 +7,10 @@ export async function compressCode(code: string): Promise<string> {
   const encoder = new TextEncoder();
   const data = encoder.encode(code);
 
-  const compressedStream = new Response(data).body!.pipeThrough(
-    new CompressionStream("gzip")
-  );
+  const body = new Response(data).body;
+  if (!body) throw new Error("Failed to create response body for compression");
 
+  const compressedStream = body.pipeThrough(new CompressionStream("gzip"));
   const compressedData = await new Response(compressedStream).arrayBuffer();
   const base64 = btoa(String.fromCharCode(...new Uint8Array(compressedData)));
 
@@ -38,65 +38,11 @@ export async function decompressCode(compressed: string): Promise<string> {
     bytes[i] = binaryString.charCodeAt(i);
   }
 
-  const decompressedStream = new Response(bytes).body!.pipeThrough(
-    new DecompressionStream("gzip")
-  );
+  const body = new Response(bytes).body;
+  if (!body)
+    throw new Error("Failed to create response body for decompression");
+
+  const decompressedStream = body.pipeThrough(new DecompressionStream("gzip"));
 
   return new Response(decompressedStream).text();
-}
-
-// Cache for compression promises to avoid redundant compression
-const compressionCache = new Map<string, Promise<string>>();
-
-/**
- * Compresses code with caching to avoid redundant compression.
- * @param code - The string to compress
- * @returns URL-safe base64 encoded gzip compressed string
- */
-export function compressCodeCached(code: string): Promise<string> {
-  const cached = compressionCache.get(code);
-  if (cached) {
-    return cached;
-  }
-
-  const promise = compressCode(code);
-  compressionCache.set(code, promise);
-
-  // Limit cache size
-  if (compressionCache.size > 100) {
-    const firstKey = compressionCache.keys().next().value;
-    if (firstKey !== undefined) {
-      compressionCache.delete(firstKey);
-    }
-  }
-
-  return promise;
-}
-
-// Cache for decompression promises
-const decompressionCache = new Map<string, Promise<string>>();
-
-/**
- * Decompresses code with caching to avoid redundant decompression.
- * @param compressed - The compressed string to decompress
- * @returns The original decompressed string
- */
-export function decompressCodeCached(compressed: string): Promise<string> {
-  const cached = decompressionCache.get(compressed);
-  if (cached) {
-    return cached;
-  }
-
-  const promise = decompressCode(compressed);
-  decompressionCache.set(compressed, promise);
-
-  // Limit cache size
-  if (decompressionCache.size > 100) {
-    const firstKey = decompressionCache.keys().next().value;
-    if (firstKey !== undefined) {
-      decompressionCache.delete(firstKey);
-    }
-  }
-
-  return promise;
 }

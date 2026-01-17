@@ -1,4 +1,5 @@
-import { ChevronDown } from "lucide-react";
+import type React from "react";
+import { ChevronDown as ChevronDownIcon } from "lucide-react";
 import type { BundledTheme } from "shiki";
 import { themeList } from "../lib/shiki/themes";
 
@@ -10,7 +11,10 @@ interface ThemeSelectorProps {
 /**
  * A dropdown selector for choosing a Shiki theme.
  */
-export function ThemeSelector({ value, onChange }: ThemeSelectorProps) {
+export const ThemeSelector: React.FC<ThemeSelectorProps> = ({
+  value,
+  onChange,
+}) => {
   return (
     <div className="relative">
       <select
@@ -24,7 +28,7 @@ export function ThemeSelector({ value, onChange }: ThemeSelectorProps) {
           </option>
         ))}
       </select>
-      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+      <ChevronDownIcon className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
     </div>
   );
-}
+};

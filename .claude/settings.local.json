@@ -11,7 +11,11 @@
       "Bash(pnpm dev)",
       "Bash(lsof:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "WebFetch(domain:jotai.org)",
+      "Bash(pnpm remove:*)",
+      "Bash(pnpm tsc:*)",
+      "Bash(pnpm eslint:*)"
     ]
   }
 }

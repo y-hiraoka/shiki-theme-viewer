@@ -11,12 +11,17 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
+    "jotai": "^2.16.2",
+    "jotai-eager": "^0.2.3",
+    "jotai-effect": "^2.2.3",
+    "jotai-family": "^1.0.1",
+    "jotai-location": "^0.6.2",
     "lucide-react": "^0.562.0",
-    "nuqs": "^2.8.6",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "shiki": "^3.21.0",
-    "tailwindcss": "^4.1.18"
+    "tailwindcss": "^4.1.18",
+    "valibot": "^1.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
