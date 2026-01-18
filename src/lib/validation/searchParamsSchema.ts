@@ -1,7 +1,11 @@
 import * as v from "valibot";
 import { bundledThemes, bundledLanguages } from "shiki";
 import type { BundledTheme, BundledLanguage } from "shiki";
-import { DEFAULT_THEME, DEFAULT_LANGUAGE } from "../../constants/defaults";
+import {
+  DEFAULT_THEME,
+  DEFAULT_THEMES,
+  DEFAULT_LANGUAGE,
+} from "../../constants/defaults";
 
 /**
  * Schema for parsing themes parameter (comma-separated string to array).
@@ -10,15 +14,18 @@ import { DEFAULT_THEME, DEFAULT_LANGUAGE } from "../../constants/defaults";
 export const themesParamSchema = v.pipe(
   v.optional(v.string()),
   v.transform((val): BundledTheme[] => {
-    if (!val || val.trim() === "") {
-      return [DEFAULT_THEME];
+    if (val === undefined || val === null) {
+      return DEFAULT_THEMES;
+    }
+    if (val.trim() === "") {
+      return DEFAULT_THEMES;
     }
     const themes = val
       .split(",")
       .map((t) => t.trim())
       .filter(Boolean);
     if (themes.length === 0) {
-      return [DEFAULT_THEME];
+      return DEFAULT_THEMES;
     }
     return themes.map((t) =>
       t in bundledThemes ? (t as BundledTheme) : DEFAULT_THEME

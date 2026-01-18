@@ -2,7 +2,7 @@ import { atom } from "jotai";
 import type { BundledTheme, BundledLanguage } from "shiki";
 import { locationAtom } from "./locationAtom";
 import { parseSearchParams } from "../lib/validation/searchParamsSchema";
-import { DEFAULT_THEME, DEFAULT_LANGUAGE } from "../constants/defaults";
+import { DEFAULT_THEMES, DEFAULT_LANGUAGE } from "../constants/defaults";
 
 /**
  * Derived atom that parses and validates searchParams from location.
@@ -14,12 +14,12 @@ const parsedSearchParamsAtom = atom((get) => {
 
 /**
  * Read-write atom for the selected themes array.
- * Read: Returns themes from URL (validated by valibot schema).
+ * Read: Returns themes from URL (defaults handled by schema, ?? for type safety).
  * Write: Updates themes in URL.
  */
 export const themesAtom = atom(
   (get): BundledTheme[] =>
-    get(parsedSearchParamsAtom).themes ?? [DEFAULT_THEME],
+    get(parsedSearchParamsAtom).themes ?? DEFAULT_THEMES,
   (get, set, themes: BundledTheme[]) => {
     const location = get(locationAtom);
     const params = new URLSearchParams(location.searchParams ?? undefined);

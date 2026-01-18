@@ -2,6 +2,8 @@ import type { BundledLanguage, BundledTheme } from "shiki";
 
 export const DEFAULT_THEME: BundledTheme = "github-dark";
 
+export const DEFAULT_THEMES: BundledTheme[] = ["github-dark", "github-light"];
+
 export const DEFAULT_LANGUAGE: BundledLanguage = "typescript";
 
 export const DEFAULT_CODE = `// Welcome to Shiki Theme Viewer!
