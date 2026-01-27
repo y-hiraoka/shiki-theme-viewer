@@ -1,4 +1,4 @@
-import * as v from "valibot";
+import { z } from "zod/v4";
 import { bundledThemes, bundledLanguages } from "shiki";
 import type { BundledTheme, BundledLanguage } from "shiki";
 import {
@@ -11,9 +11,10 @@ import {
  * Schema for parsing themes parameter (comma-separated string to array).
  * Invalid themes are replaced with the default theme.
  */
-export const themesParamSchema = v.pipe(
-  v.optional(v.string()),
-  v.transform((val): BundledTheme[] => {
+export const themesParamSchema = z
+  .string()
+  .optional()
+  .transform((val): BundledTheme[] => {
     if (val === undefined || val === null) {
       return DEFAULT_THEMES;
     }
@@ -30,32 +31,31 @@ export const themesParamSchema = v.pipe(
     return themes.map((t) =>
       t in bundledThemes ? (t as BundledTheme) : DEFAULT_THEME
     );
-  })
-);
+  });
 
 /**
  * Schema for parsing language parameter.
  * Invalid languages are replaced with the default language.
  */
-export const langParamSchema = v.pipe(
-  v.optional(v.string()),
-  v.transform((val): BundledLanguage => {
+export const langParamSchema = z
+  .string()
+  .optional()
+  .transform((val): BundledLanguage => {
     if (val && val in bundledLanguages) {
       return val as BundledLanguage;
     }
     return DEFAULT_LANGUAGE;
-  })
-);
+  });
 
 /**
  * Combined schema for all searchParams.
  */
-export const searchParamsSchema = v.object({
+export const searchParamsSchema = z.object({
   themes: themesParamSchema,
   lang: langParamSchema,
 });
 
-export type ParsedSearchParams = v.InferOutput<typeof searchParamsSchema>;
+export type ParsedSearchParams = z.infer<typeof searchParamsSchema>;
 
 /**
  * Parses URLSearchParams into validated search params.
@@ -65,7 +65,7 @@ export type ParsedSearchParams = v.InferOutput<typeof searchParamsSchema>;
 export function parseSearchParams(
   params: URLSearchParams | undefined
 ): ParsedSearchParams {
-  return v.parse(searchParamsSchema, {
+  return searchParamsSchema.parse({
     themes: params?.get("themes") ?? undefined,
     lang: params?.get("lang") ?? undefined,
   });
